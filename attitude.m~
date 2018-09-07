@@ -46,7 +46,7 @@ K_d = eye(3)*k_d;
 phi_d = 0;
 theta_d = 15*cosd(0)*deg2rad;
 psi_d = 10*sind(0)*deg2rad;
-theta_dot = [0;-1.5*sind(0);0.5*cos(0)];
+theta_dot = [0;1.5*sind(0);0.5*cos(0)];
 
 
 table = zeros(N+1,21);        % memory allocation
@@ -58,10 +58,9 @@ for i = 1:N+1,
    q_tilde = quatproduct([q_d(1);-q_d(2:4)],q);
    q_tilde = q_tilde/norm(q_tilde);
    eps_tilde = q_tilde(2:4);
-   [J, J1, J2] = eulerang(phi_d, theta_d,psi_d);
-   w_d = inv(J2)*theta_dot;
-   w_tilde = w - w_d;
-   tau = -K_d*w_tilde-k_p*eps_tilde;               % control law
+   [J, J1, J2] = eulerang(theta_dot(1), theta_dot(2),theta_dot(3));
+   w_d = 
+   tau = -K_d*w-k_p*eps_tilde;               % control law
 
    [phi,theta,psi] = q2euler(q); % transform q to Euler angles
    [J,J1,J2] = quatern(q);       % kinematic transformation matrices
@@ -78,7 +77,7 @@ for i = 1:N+1,
    phi_d = 0;
    theta_d = 15*cosd(0.1*t)*deg2rad;
    psi_d = 10*sind(0.5*t)*deg2rad;
-   theta_dot = [0;-1.5*sind(0.1*t);0.5*cos(0.05*t)];
+   theta_dot = [0;1.5*sind(0.1*t);0.5*cos(0.05*t)];
 end 
 
 %% PLOT FIGURES
