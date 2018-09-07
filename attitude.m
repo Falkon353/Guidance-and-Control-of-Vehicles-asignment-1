@@ -39,17 +39,17 @@ q = euler2q(phi,theta,psi);   % transform initial Euler angles to q
 
 w = [0 0 0]';                 % initial angular rates
 
-k_d = 400;
-k_p = 20;
+k_d = 20;
+k_p = 200;
 K_d = eye(3)*k_d;
 
 phi_d = 0;
 theta_d = 15*cosd(0)*deg2rad;
 psi_d = 10*sind(0)*deg2rad;
-theta_dot = [0;-1.5*sind(0);0.5*cos(0)];
+theta_dot = [0;-1.5*sind(0)*deg2rad;0.5*cosd(0)*deg2rad];
 
 
-table = zeros(N+1,21);        % memory allocation
+table = zeros(N+1,24);        % memory allocation
 
 %% FOR-END LOOP
 for i = 1:N+1,
@@ -68,7 +68,7 @@ for i = 1:N+1,
    
    q_dot = J2*w;                        % quaternion kinematics
    w_dot = I_inv*(Smtrx(I*w)*w + tau);  % rigid-body kinetics
-   table(i,:) = [t q' phi theta psi w' tau' phi_d theta_d psi_d q_tilde'];  % store data in table
+   table(i,:) = [t q' phi theta psi w' tau' phi_d theta_d psi_d q_tilde' w_d'];  % store data in table
    
    q = q + h*q_dot;	             % Euler integration
    w = w + h*w_dot;
@@ -78,7 +78,7 @@ for i = 1:N+1,
    phi_d = 0;
    theta_d = 15*cosd(0.1*t)*deg2rad;
    psi_d = 10*sind(0.5*t)*deg2rad;
-   theta_dot = [0;-1.5*sind(0.1*t);0.5*cos(0.05*t)];
+   theta_dot = [0;-1.5*sind(0.1*t)*deg2rad;0.5*cosd(0.05*t)*deg2rad];
 end 
 
 %% PLOT FIGURES
@@ -93,6 +93,7 @@ phi_d = rad2deg*table(:,15);
 theta_d = rad2deg*table(:,16);
 psi_d = rad2deg*table(:,17);
 q_tilde = table(:,18:21);
+w_d = table(:,22:24);
 
 
 figure (1); clf;
@@ -115,9 +116,12 @@ hold on;
 plot(t, w(:,1), 'b');
 plot(t, w(:,2), 'r');
 plot(t, w(:,3), 'g');
+plot(t, w_d(:,1), 'b--');
+plot(t, w_d(:,2), 'r--');
+plot(t, w_d(:,3), 'g--');
 hold off;
 grid on;
-legend('x', 'y', 'z');
+legend('x', 'y', 'z', 'x_d', 'y_d', 'z_d');
 title('Angular velocities');
 xlabel('time [s]'); 
 ylabel('angular rate [deg/s]');
