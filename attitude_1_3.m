@@ -24,7 +24,7 @@ h = 0.1;                     % sample time (s)
 N  = 3000;                    % number of samples. Should be adjusted
 
 % model parameters
-I = diag([50 100 80]);       % inertia matrix
+I = diag([720 720 720]);       % inertia matrix
 I_inv = inv(I);
 
 % constants
